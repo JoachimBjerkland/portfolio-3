@@ -3,44 +3,111 @@
 <head>
     <title>Wireframe for Prosjektoversikt</title>
     <style>
+        /* CSS-variabler for å gjøre det enkelt å justere farger og padding */
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #ccc;
+            --text-color: #333;
+            --padding: 10px;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f9f9f9;
+            color: var(--text-color);
         }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+        }
+
         .container {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
+
         .project-list, .project-form {
-            width: 45%;
-            border: 1px solid #ccc;
-            padding: 10px;
+            padding: var(--padding);
+            border: 1px solid var(--secondary-color);
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background-color: #fff;
+            transition: transform 0.2s ease;
         }
+
+        .project-list:hover, .project-form:hover {
+            transform: scale(1.05);
+        }
+
         .project-list h2, .project-form h2 {
             text-align: center;
+            margin-bottom: 15px;
         }
+
         .project-list ul {
             list-style-type: none;
             padding: 0;
         }
-        .project-list li {
+
+        /* Nesting for li elements */
+        .project-list ul li {
             padding: 8px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid var(--secondary-color);
+            position: relative;
         }
+
+        .project-list ul li::before {
+            content: "•";
+            color: var(--primary-color);
+            position: absolute;
+            left: -20px;
+            font-size: 1.2rem;
+        }
+
+        /* Pseudo-selector for hover effekt */
+        .project-list ul li:hover {
+            background-color: #f0f0f0;
+        }
+
         .project-form input, .project-form textarea {
             width: 100%;
             padding: 8px;
             margin: 5px 0;
-            border: 1px solid #ccc;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
         }
+
         .project-form button {
             width: 100%;
             padding: 10px;
-            background-color: #4CAF50;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .project-form button:hover {
+            background-color: #45a049;
+        }
+
+        /* Grid layout for form fields */
+        .project-form form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .project-form form label {
+            grid-column: span 2;
+        }
+
+        .project-form form input[type="date"], .project-form form textarea {
+            grid-column: span 2;
         }
     </style>
 </head>
