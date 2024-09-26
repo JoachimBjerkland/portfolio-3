@@ -4,16 +4,18 @@ const app = express();
 const port = 5000;
 
 // Middleware
-app.use(cors()); // Aktiver CORS for alle ruter
+app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 
-// Dummy prosjektdata
+// Dummy project data
 const projects = [
-  { id: '1', title: 'Nytt Prosjekt', description: 'Beskrivelse av nytt prosjekt' }, // Endret id til string
-  { id: '2', title: 'Annet Prosjekt', description: 'Beskrivelse av annet prosjekt' }, // Endret id til string
-];
+    { id: String(1), title: 'Nytt Prosjekt', description: 'Beskrivelse av nytt prosjekt', createdAt: '2024-09-01', category: 'Utvikling' },
+    { id: String(2), title: 'Annet Prosjekt', description: 'Beskrivelse av annet prosjekt', createdAt: '2024-09-02', category: 'Design' },
+  ];
+  
+  
 
-// Rute for prosjekter
+// Route for projects
 app.get('/projects', (req, res) => {
   res.json(projects);
 });

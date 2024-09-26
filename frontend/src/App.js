@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import useProjects from './hooks/useProjects';
+import { isValidDate } from './utils/validators';
+import { parseISO } from 'date-fns';
 
 // Header component
 function Header({ student }) {
   return (
     <div>
       <h1>{student.name}</h1>
-      <p>
-        {student.degree} {student.points} studiepoeng
-      </p>
+      <p>{student.degree} {student.points} studiepoeng</p>
     </div>
   );
 }
@@ -43,12 +44,10 @@ function Contact({ student }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!name || !message) {
       alert('Vennligst fyll inn både navn og melding.');
       return;
     }
-
     setSubmittedData({ name, message });
     setName('');
     setMessage('');
@@ -90,54 +89,26 @@ function Contact({ student }) {
 }
 
 // Project component
-function Project({ children }) {
-  return <div>{children}</div>;
-}
+function Project({ project }) {
+  const createdAt = project.createdAt ? parseISO(project.createdAt) : null;
 
-// Projects component to render a list of projects
-function Projects({ projects }) {
   return (
-    <>
-      {projects.length > 0 ? (
-        projects.map((project) => (
-          <Project key={project.id}>
-            <h3>{project.title}</h3>
-            <p>{project.description}</p>
-            <p><strong>Opprettet:</strong> {project.createdAt}</p>
-            <p><strong>Kategori:</strong> {project.category}</p>
-          </Project>
-        ))
+    <div>
+      <h3>{project.title}</h3>
+      <p>{project.description}</p>
+      {createdAt ? (
+        <p><strong>Opprettet:</strong> {createdAt.toLocaleDateString()}</p>
       ) : (
-        <p>Ingen prosjekter</p>
+        <p><strong>Opprettet:</strong> Ingen dato tilgjengelig</p>
       )}
-    </>
+    <p><strong>Kategori:</strong> {project.category || 'Ingen kategori tilgjengelig'}</p>
+</div>
   );
 }
 
 // Main App component
 function App() {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    // Fetch projects from the backend
-    fetch('http://localhost:5000/projects')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProjects(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
-  }, []);
+  const { projects, loading, error } = useProjects();
 
   const student = {
     name: 'Halgeir Geirson',
@@ -159,7 +130,13 @@ function App() {
       ) : error ? (
         <p>Feil ved lasting av prosjekter: {error}</p>
       ) : (
-        <Projects projects={projects} />
+        projects.length > 0 ? (
+          projects.map((project) => (
+            <Project key={project.id} project={project} />
+          ))
+        ) : (
+          <p>Ingen prosjekter</p>
+        )
       )}
       <Contact student={student} />
     </main>
