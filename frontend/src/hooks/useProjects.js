@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { projectSchema } from '../validations/projectSchema';
+import { useState, useEffect } from 'react';
 
 const useProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -10,16 +9,13 @@ const useProjects = () => {
     const fetchProjects = async () => {
       try {
         const response = await fetch('http://localhost:5000/projects');
-        if (!response.ok) throw new Error('Feil ved lasting av prosjekter');
-
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         const data = await response.json();
-
-        // Valider prosjektene med Zod
-        const validatedProjects = data.map((project) => projectSchema.parse(project));
-
-        setProjects(validatedProjects);
-      } catch (err) {
-        setError(err.message);
+        setProjects(data);
+      } catch (error) {
+        setError(error.message);
       } finally {
         setLoading(false);
       }

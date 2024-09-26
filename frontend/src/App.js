@@ -90,18 +90,15 @@ function Contact({ student }) {
 
 // Project component
 function Project({ project }) {
-  const createdAt = project.createdAt ? parseISO(project.createdAt) : null;
+
 
   return (
     <div>
       <h3>{project.title}</h3>
       <p>{project.description}</p>
-      {createdAt ? (
-        <p><strong>Opprettet:</strong> {createdAt.toLocaleDateString()}</p>
-      ) : (
-        <p><strong>Opprettet:</strong> Ingen dato tilgjengelig</p>
-      )}
-      <p><strong>Kategori:</strong> {project.category ? project.category : 'Ingen kategori tilgjengelig'}</p>
+      <p><strong>Opprettet:</strong> {project.createdAt}</p>
+      <p><strong>Publisert:</strong> {project.publishedAt}</p> {/* Viser publishedAt */}
+      <p><strong>Kategori:</strong> {project.category}</p>
     </div>
   );
 }
