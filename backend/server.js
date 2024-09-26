@@ -9,8 +9,8 @@ app.use(express.json());
 
 // Dummy project data
 const projects = [
-    { id: String(1), title: 'Nytt Prosjekt', description: 'Beskrivelse av nytt prosjekt', createdAt: '2024-09-01', category: 'Utvikling' },
-    { id: String(2), title: 'Annet Prosjekt', description: 'Beskrivelse av annet prosjekt', createdAt: '2024-09-02', category: 'Design' },
+    { id: String(1), title: 'Nytt Prosjekt', description: 'Beskrivelse av nytt prosjekt', createdAt: '2024-09-01', publishedAt: '2024-09-05', category: 'Utvikling' },
+    { id: String(2), title: 'Annet Prosjekt', description: 'Beskrivelse av annet prosjekt', createdAt: '2024-09-02', publishedAt: '2024-09-05', category: 'Design' },
   ];
   
   

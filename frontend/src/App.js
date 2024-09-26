@@ -101,8 +101,8 @@ function Project({ project }) {
       ) : (
         <p><strong>Opprettet:</strong> Ingen dato tilgjengelig</p>
       )}
-    <p><strong>Kategori:</strong> {project.category || 'Ingen kategori tilgjengelig'}</p>
-</div>
+      <p><strong>Kategori:</strong> {project.category ? project.category : 'Ingen kategori tilgjengelig'}</p>
+    </div>
   );
 }
 
