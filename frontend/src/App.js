@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './Layout'; // Global layout komponent
-import PortfolioPage from './PortfolioPage'; // Portfolio-siden
+import React from 'react';
+import './App.css';
+import useProjects from './hooks/useProjects';
 
 // Header component
 function Header({ student }) {
@@ -37,58 +36,34 @@ function Experiences({ experiences }) {
 
 // Contact form component
 function Contact({ student }) {
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-  const [submittedData, setSubmittedData] = useState(null);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name || !message) {
-      alert('Vennligst fyll inn både navn og melding.');
-      return;
-    }
-    setSubmittedData({ name, message });
-    setName('');
-    setMessage('');
-  };
-
   return (
     <div>
       <p>Kontakt studenten på: {student.email}</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Navn:</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="message">Melding:</label>
-          <textarea
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Send melding</button>
-      </form>
-      {submittedData && (
-        <div>
-          <h3>Innsendt data:</h3>
-          <pre>{JSON.stringify(submittedData, null, 2)}</pre>
-        </div>
-      )}
     </div>
   );
 }
 
-// Hjemmesiden
-function HomePage() {
+// Project component
+function Project({ project }) {
+  return (
+    <div>
+      <h3>{project.title}</h3>
+      <p>{project.description}</p>
+      <p><strong>Status:</strong> {project.status}</p> {/* Nytt felt */}
+      <p><strong>Opprettet:</strong> {project.createdAt}</p>
+      <p><strong>Publisert:</strong> {project.publishedAt}</p>
+      <p><strong>Kategori:</strong> {project.category}</p>
+      <p><strong>Tags:</strong> {project.tags.join(', ')}</p> {/* Nytt felt */}
+      <p><strong>Synlighet:</strong> {project.public ? 'Public' : 'Private'}</p> {/* Nytt felt */}
+      {project.link && <p><strong>Ekstern lenke:</strong> <a href={project.link}>{project.link}</a></p>} {/* Nytt felt */}
+    </div>
+  );
+}
+
+// Main App component
+function App() {
+  const { projects, loading, error } = useProjects();
+
   const student = {
     name: 'Halgeir Geirson',
     degree: 'Bachelor IT',
@@ -101,26 +76,24 @@ function HomePage() {
   };
 
   return (
-    <Layout>
+    <main>
       <Header student={student} />
       <Experiences experiences={student.experiences} />
+      {loading ? (
+        <p>Laster prosjekter...</p>
+      ) : error ? (
+        <p>Feil ved lasting av prosjekter: {error}</p>
+      ) : (
+        projects.length > 0 ? (
+          projects.map((project) => (
+            <Project key={project.id} project={project} />
+          ))
+        ) : (
+          <p>Ingen prosjekter</p>
+        )
+      )}
       <Contact student={student} />
-    </Layout>
-  );
-}
-
-// Main App component
-function App() {
-  return (
-    <Router>
-      <Routes>
-        {/* Route for Portfolio-siden */}
-        <Route path="/portfolio" element={<PortfolioPage />} />
-
-        {/* Route for Hjemmesiden */}
-        <Route path="/" element={<HomePage />} />
-      </Routes>
-    </Router>
+    </main>
   );
 }
 
