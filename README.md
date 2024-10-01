@@ -1,5 +1,14 @@
 # portfolio-3
 
+1.3 Cookies og mellomvare
+COOKIES SJEKK: console.log(document.cookie)
+
+Ny cookie med navnet user.role og verdien admin i consollen, under application -> cookie
+
+
+
+--------------------------------------------------------------------------------------------------------------
+
 
 1.3 Vurder komponent komposisjonen:
 
