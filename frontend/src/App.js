@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import './App.css';
-import useProjects from './hooks/useProjects';
-import { isValidDate } from './utils/validators';
-import { parseISO } from 'date-fns';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './Layout'; // Global layout komponent
+import PortfolioPage from './PortfolioPage'; // Portfolio-siden
 
 // Header component
 function Header({ student }) {
@@ -88,25 +87,8 @@ function Contact({ student }) {
   );
 }
 
-// Project component
-function Project({ project }) {
-
-
-  return (
-    <div>
-      <h3>{project.title}</h3>
-      <p>{project.description}</p>
-      <p><strong>Opprettet:</strong> {project.createdAt}</p>
-      <p><strong>Publisert:</strong> {project.publishedAt}</p> {/* Viser publishedAt */}
-      <p><strong>Kategori:</strong> {project.category}</p>
-    </div>
-  );
-}
-
-// Main App component
-function App() {
-  const { projects, loading, error } = useProjects();
-
+// Hjemmesiden
+function HomePage() {
   const student = {
     name: 'Halgeir Geirson',
     degree: 'Bachelor IT',
@@ -119,24 +101,26 @@ function App() {
   };
 
   return (
-    <main>
+    <Layout>
       <Header student={student} />
       <Experiences experiences={student.experiences} />
-      {loading ? (
-        <p>Laster prosjekter...</p>
-      ) : error ? (
-        <p>Feil ved lasting av prosjekter: {error}</p>
-      ) : (
-        projects.length > 0 ? (
-          projects.map((project) => (
-            <Project key={project.id} project={project} />
-          ))
-        ) : (
-          <p>Ingen prosjekter</p>
-        )
-      )}
       <Contact student={student} />
-    </main>
+    </Layout>
+  );
+}
+
+// Main App component
+function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Route for Portfolio-siden */}
+        <Route path="/portfolio" element={<PortfolioPage />} />
+
+        {/* Route for Hjemmesiden */}
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </Router>
   );
 }
 
