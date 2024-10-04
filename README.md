@@ -9,8 +9,9 @@ Ny cookie med navnet user.role og verdien admin i consollen, under application -
 
 
 Ved feilmelding av cookie:
-Backend: npm install cookie-parser
-Frontend: npm install js-cookie
+Backend: npm install cookie-parser.
+
+Frontend: npm install js-cookie.
 
 --------------------------------------------------------------------------------------------------------------
 
