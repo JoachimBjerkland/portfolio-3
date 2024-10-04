@@ -5,7 +5,12 @@ COOKIES SJEKK: console.log(document.cookie)
 
 Ny cookie med navnet user.role og verdien admin i consollen, under application -> cookie
 
+--------------------------------------------------------------------------------------------------------------
 
+
+Ved feilmelding av cookie:
+Backend: npm install cookie-parser
+Frontend: npm install js-cookie
 
 --------------------------------------------------------------------------------------------------------------
 
