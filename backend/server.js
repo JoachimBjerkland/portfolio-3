@@ -1,56 +1,27 @@
 const express = require('express');
 const cors = require('cors');
-const { PrismaClient } = require('@prisma/client');
+const ProjectController = require('./controllers/projectController');
 
 const app = express();
-const prisma = new PrismaClient();
-
 app.use(cors());
-app.use(express.json()); // For å parse JSON-forespørsel
+app.use(express.json()); // Middleware for å parse JSON-forespørsel
 
 // REST API Endepunkter
 
-// 1. Hent alle prosjekter
-app.get('/api/projects', async (req, res) => {
-    const projects = await prisma.project.findMany();
-    res.json(projects);
-});
+// Hent alle prosjekter
+app.get('/api/projects', ProjectController.getAllProjects);
 
-// 2. Hent et prosjekt etter ID
-app.get('/api/projects/:id', async (req, res) => {
-    const { id } = req.params;
-    const project = await prisma.project.findUnique({
-        where: { id: Number(id) },
-    });
-    res.json(project);
-});
+// Hent et prosjekt etter ID
+app.get('/api/projects/:id', ProjectController.getProjectById);
 
-// 3. Opprett et nytt prosjekt
-app.post('/api/projects', async (req, res) => {
-    const project = await prisma.project.create({
-        data: req.body,
-    });
-    res.json(project);
-});
+// Opprett et nytt prosjekt
+app.post('/api/projects', ProjectController.createProject);
 
-// 4. Oppdater et eksisterende prosjekt
-app.put('/api/projects/:id', async (req, res) => {
-    const { id } = req.params;
-    const updatedProject = await prisma.project.update({
-        where: { id: Number(id) },
-        data: req.body,
-    });
-    res.json(updatedProject);
-});
+// Oppdater et eksisterende prosjekt
+app.put('/api/projects/:id', ProjectController.updateProject);
 
-// 5. Slett et prosjekt
-app.delete('/api/projects/:id', async (req, res) => {
-    const { id } = req.params;
-    await prisma.project.delete({
-        where: { id: Number(id) },
-    });
-    res.status(204).send(); // Ingen innhold å sende tilbake
-});
+// Slett et prosjekt
+app.delete('/api/projects/:id', ProjectController.deleteProject);
 
 // Start serveren
 const PORT = process.env.PORT || 5000;
