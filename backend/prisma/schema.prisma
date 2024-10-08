@@ -8,8 +8,10 @@ generator client {
 }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
   description String
   publishedAt DateTime
   status      String  

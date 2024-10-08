@@ -1,79 +1,59 @@
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const { PrismaClient } = require('@prisma/client'); // Importer PrismaClient
-const app = express();
-const port = 5000;
+const { PrismaClient } = require('@prisma/client');
 
-// Sett opp Prisma-klient
+const app = express();
 const prisma = new PrismaClient();
 
-// Middleware
 app.use(cors());
-app.use(cookieParser());
-app.use(express.json());
+app.use(express.json()); // For å parse JSON-forespørsel
 
-// Dummy prosjektdata (for testing)
-const projects = [
-    {
-        id: String(1),
-        title: 'Nytt Prosjekt',
-        description: 'Beskrivelse av nytt prosjekt',
-        createdAt: '2024-09-01',
-        publishedAt: '2024-09-05',
-        status: 'completed',
-        tags: ['development', 'web'],
-        public: true,
-        link: 'https://external-link.com',
-        category: 'Utvikling',
-        demos: [],
-        files: [],
-        author: {
-            name: 'Halgeir Geirson',
-            bio: 'Student og utvikler fra HiOF.'
-        }
-    },
-    {
-        id: String(2),
-        title: 'Annet Prosjekt',
-        description: 'Beskrivelse av annet prosjekt',
-        createdAt: '2024-09-02',
-        publishedAt: '2024-09-05',
-        status: 'in-progress',
-        tags: ['design', 'UI/UX'],
-        public: false,
-        link: 'https://another-external-link.com',
-        category: 'Design',
-        demos: [],
-        files: [],
-        author: {
-            name: 'Anna Design',
-            bio: 'UI/UX designer med flere års erfaring.'
-        }
-    }
-];
+// REST API Endepunkter
 
-// Hent prosjekter fra databasen
-app.get('/projects', async (req, res) => {
-    const role = req.cookies['user.role']; // Hent brukerens rolle fra cookie
-    let filteredProjects;
-
-    try {
-        if (role === 'admin') {
-            filteredProjects = projects; // Admin ser alle prosjekter
-        } else {
-            // Andre brukere ser kun offentlige prosjekter
-            filteredProjects = projects.filter(project => project.public);
-        }
-
-        res.json(filteredProjects);
-    } catch (error) {
-        console.error('Feil ved henting av prosjekter:', error);
-        res.status(500).json({ message: 'Feil ved henting av prosjekter' });
-    }
+// 1. Hent alle prosjekter
+app.get('/api/projects', async (req, res) => {
+    const projects = await prisma.project.findMany();
+    res.json(projects);
 });
 
-// Start server
-app.listen(port, () => {
-    console.log(`Server kjører på http://localhost:${port}`);
+// 2. Hent et prosjekt etter ID
+app.get('/api/projects/:id', async (req, res) => {
+    const { id } = req.params;
+    const project = await prisma.project.findUnique({
+        where: { id: Number(id) },
+    });
+    res.json(project);
+});
+
+// 3. Opprett et nytt prosjekt
+app.post('/api/projects', async (req, res) => {
+    const project = await prisma.project.create({
+        data: req.body,
+    });
+    res.json(project);
+});
+
+// 4. Oppdater et eksisterende prosjekt
+app.put('/api/projects/:id', async (req, res) => {
+    const { id } = req.params;
+    const updatedProject = await prisma.project.update({
+        where: { id: Number(id) },
+        data: req.body,
+    });
+    res.json(updatedProject);
+});
+
+// 5. Slett et prosjekt
+app.delete('/api/projects/:id', async (req, res) => {
+    const { id } = req.params;
+    await prisma.project.delete({
+        where: { id: Number(id) },
+    });
+    res.status(204).send(); // Ingen innhold å sende tilbake
+});
+
+// Start serveren
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Serveren kjører på port ${PORT}`);
 });
