@@ -18,6 +18,7 @@ exports.getAllProjects = async (req, res) => {
         const projects = await ProjectService.getAllProjects();
         res.json(projects);
     } catch (error) {
+        console.error('Feil ved henting av prosjekter:', error); // Logg feilen
         res.status(500).json({ error: 'Noe gikk galt.' });
     }
 };
@@ -32,6 +33,7 @@ exports.getProjectById = async (req, res) => {
         }
         res.json(project);
     } catch (error) {
+        console.error(`Feil ved henting av prosjekt med ID ${id}:`, error); // Logg feilen
         res.status(500).json({ error: 'Noe gikk galt.' });
     }
 };
@@ -46,6 +48,7 @@ exports.createProject = async (req, res) => {
         if (error instanceof z.ZodError) {
             return res.status(400).json({ errors: error.errors });
         }
+        console.error('Feil ved oppretting av prosjekt:', error); // Logg feilen
         res.status(500).json({ error: 'Noe gikk galt.' });
     }
 };
@@ -64,6 +67,7 @@ exports.updateProject = async (req, res) => {
         if (error instanceof z.ZodError) {
             return res.status(400).json({ errors: error.errors });
         }
+        console.error(`Feil ved oppdatering av prosjekt med ID ${id}:`, error); // Logg feilen
         res.status(500).json({ error: 'Noe gikk galt.' });
     }
 };
@@ -75,6 +79,7 @@ exports.deleteProject = async (req, res) => {
         await ProjectService.deleteProject(id);
         res.status(204).send(); // Ingen innhold å sende tilbake
     } catch (error) {
+        console.error(`Feil ved sletting av prosjekt med ID ${id}:`, error); // Logg feilen
         res.status(500).json({ error: 'Noe gikk galt.' });
     }
 };

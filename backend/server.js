@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const ProjectController = require('./controllers/projectController');
+require('dotenv').config(); // Last inn miljøvariabler
 
 const app = express();
 app.use(cors());
