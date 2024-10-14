@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import App from '../App'; // Korrekt import
 
 describe('App', () => {
-  test('renders learn react link', () => {
-    render(<App />);
-    const linkElement = screen.getByText(/learn react/i);
-    expect(linkElement).toBeInTheDocument();
-  });
+    it('renders header with student name', () => {
+        render(<App />);
+        // Sjekker om riktig studentnavn er synlig
+        expect(screen.getByText(/Halgeir Geirson/i)).toBeInTheDocument(); // Oppdatert til det faktiske navnet
+    });
 });
