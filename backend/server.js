@@ -1,31 +1,56 @@
 const express = require('express');
-const cors = require('cors');
-const ProjectController = require('./controllers/projectController');
-require('dotenv').config(); // Last inn miljøvariabler
-
+const cors = require('cors'); // Importer cors
+const fs = require('fs').promises; // Importer fs med promises
 const app = express();
+const port = 5000;
+
+// Bruk cors
 app.use(cors());
-app.use(express.json()); // Middleware for å parse JSON-forespørsel
+app.use(express.json()); // For å håndtere JSON-forespørsler
 
-// REST API Endepunkter
+// Hent data fra data.json
+app.get('/api/data', async (req, res) => {
+    try {
+        const data = await fs.readFile('data.json', 'utf-8');
+        res.json(JSON.parse(data)); // Returner JSON-data
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to read data' });
+    }
+});
 
-// Hent alle prosjekter
-app.get('/api/projects', ProjectController.getAllProjects);
+// Legg til data til data.json
+app.post('/api/data', async (req, res) => {
+    try {
+        const newData = req.body; // Få data fra forespørselen
+        const data = await fs.readFile('data.json', 'utf-8');
+        const jsonData = JSON.parse(data);
+        jsonData.push(newData); // Legg til ny data
+        await fs.writeFile('data.json', JSON.stringify(jsonData, null, 2)); // Skriv data tilbake til fil
+        res.status(201).json(newData); // Send tilbake den nye dataen
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to save data' });
+    }
+});
 
-// Hent et prosjekt etter ID
-app.get('/api/projects/:id', ProjectController.getProjectById);
+// Rute for å hente prosjekter (dummy data)
+app.get('/projects', async (req, res) => {
+    const projects = [
+        {
+            id: 1,
+            title: 'Prosjekt 1',
+            description: 'Beskrivelse av prosjekt 1',
+            createdAt: '2024-01-01',
+            publishedAt: '2024-01-01',
+            category: 'Webutvikling',
+            status: 'Fullført',
+            tags: ['React', 'Node.js'],
+            externalLink: 'http://example.com'
+        },
+        // Legg til flere prosjekter her
+    ];
+    res.json(projects); // Returner prosjektene
+});
 
-// Opprett et nytt prosjekt
-app.post('/api/projects', ProjectController.createProject);
-
-// Oppdater et eksisterende prosjekt
-app.put('/api/projects/:id', ProjectController.updateProject);
-
-// Slett et prosjekt
-app.delete('/api/projects/:id', ProjectController.deleteProject);
-
-// Start serveren
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Serveren kjører på port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });

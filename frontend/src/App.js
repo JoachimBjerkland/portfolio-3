@@ -8,22 +8,23 @@ import Cookies from 'js-cookie'; // Importer js-cookie
 // Header component
 function Header({ student }) {
     return (
-        <div>
+        <header className="App-header">
             <h1>{student.name}</h1>
             <p>{student.degree} {student.points} studiepoeng</p>
-        </div>
+        </header>
     );
 }
 
 // Experience component
 function Experience({ children }) {
-    return <div>{children}</div>;
+    return <div className="experience">{children}</div>;
 }
 
 // Experiences component that renders a list of experiences
 function Experiences({ experiences }) {
     return (
-        <div>
+        <section className="App-experiences">
+            <h2>Erfaringer</h2>
             {experiences.length > 0 ? (
                 experiences.map((experience, index) => (
                     <Experience key={index}>
@@ -33,7 +34,7 @@ function Experiences({ experiences }) {
             ) : (
                 <p>Ingen erfaringer</p>
             )}
-        </div>
+        </section>
     );
 }
 
@@ -42,20 +43,42 @@ function Contact({ student }) {
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
     const [submittedData, setSubmittedData] = useState(null);
+    const [error, setError] = useState(null); // For å håndtere feil
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!name || !message) {
             alert('Vennligst fyll inn både navn og melding.');
             return;
         }
-        setSubmittedData({ name, message });
-        setName('');
-        setMessage('');
+
+        const entry = { name, message }; // Opprett ny oppføring
+
+        try {
+            const response = await fetch('http://localhost:5000/api/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(entry),
+            });
+
+            if (!response.ok) {
+                throw new Error('Feil ved lagring av data');
+            }
+
+            const newEntry = await response.json();
+            setSubmittedData(newEntry); // Oppdater tilstanden med den lagrede oppføringen
+            setName('');
+            setMessage('');
+        } catch (error) {
+            setError(error.message); // Sett feilmelding
+        }
     };
 
     return (
-        <div>
+        <section className="App-contact">
+            <h2>Kontakt</h2>
             <p>Kontakt studenten på: {student.email}</p>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -85,24 +108,33 @@ function Contact({ student }) {
                     <pre>{JSON.stringify(submittedData, null, 2)}</pre>
                 </div>
             )}
-        </div>
+            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Vis feilmelding */}
+        </section>
     );
 }
 
 // Project component
 function Project({ project }) {
     return (
-        <div>
+        <div className="Project-card">
             <h3>{project.title}</h3>
             <p>{project.description}</p>
             <p><strong>Opprettet:</strong> {project.createdAt}</p>
             <p><strong>Publisert:</strong> {project.publishedAt}</p>
             <p><strong>Kategori:</strong> {project.category}</p>
-            {/* Legg til status, tags, og relaterte data */}
             <p><strong>Status:</strong> {project.status}</p>
             <p><strong>Tags:</strong> {project.tags.join(', ')}</p>
             <p><strong>Link:</strong> <a href={project.externalLink} target="_blank" rel="noopener noreferrer">{project.externalLink}</a></p>
         </div>
+    );
+}
+
+// Footer component
+function Footer() {
+    return (
+        <footer className="App-footer">
+            <p>&copy; 2024 Halgeir Geirson</p>
+        </footer>
     );
 }
 
@@ -122,29 +154,33 @@ function App() {
     };
 
     useEffect(() => {
-        // Sett cookie når appen lastes
-        Cookies.set('user.role', 'admin', { path: '/', expires: 1 }); // cookie varer i 1 dag
-    }, []); // tom array betyr at effekten kjører bare ved første rendering
+        Cookies.set('user.role', 'admin', { path: '/', expires: 1 });
+    }, []);
 
     return (
-        <main>
+        <>
             <Header student={student} />
-            <Experiences experiences={student.experiences} />
-            {loading ? (
-                <p>Laster prosjekter...</p>
-            ) : error ? (
-                <p>Feil ved lasting av prosjekter: {error}</p>
-            ) : (
-                projects.length > 0 ? (
-                    projects.map((project) => (
-                        <Project key={project.id} project={project} />
-                    ))
+            <main className="App-content">
+                <Experiences experiences={student.experiences} />
+                {loading ? (
+                    <p>Laster prosjekter...</p>
+                ) : error ? (
+                    <p>Feil ved lasting av prosjekter: {error}</p>
                 ) : (
-                    <p>Ingen prosjekter</p>
-                )
-            )}
-            <Contact student={student} />
-        </main>
+                    projects.length > 0 ? (
+                        <section className="Projects-container">
+                            {projects.map((project) => (
+                                <Project key={project.id} project={project} />
+                            ))}
+                        </section>
+                    ) : (
+                        <p>Ingen prosjekter</p>
+                    )
+                )}
+                <Contact student={student} />
+            </main>
+            <Footer />
+        </>
     );
 }
 

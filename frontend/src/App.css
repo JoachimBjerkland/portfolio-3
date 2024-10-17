@@ -4,31 +4,59 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #e0f7fa; /* Light blue background */
-  padding: 0 20px; /* Add some padding on left and right */
+  background-color: #e0f7fa;
+  padding: 0;
 }
 
 /* Header Styles */
 .App-header {
   text-align: center;
-  padding: 20px;
-  background-color: #00796b; /* Darker teal for header background */
+  padding: 30px;
+  background-color: #00796b;
   color: white;
+  border-bottom: 4px solid #004d40;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.App-header p {
+  margin: 5px 0 0;
+  font-size: 1.2rem;
 }
 
 /* App Content Styles */
 .App-content {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 1000px;
+  margin: 20px auto;
   padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Experience Section */
+.App-experiences {
+  margin-bottom: 30px;
+}
+
+.App-experiences h2 {
+  margin-bottom: 15px;
+  color: #00796b;
 }
 
 /* Experience Component Styles */
-.Experience {
+.experience {
   margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #00796b;
+  border-radius: 4px;
+  background-color: #f1f1f1;
 }
 
-/* Projects Component Styles */
+/* Projects Section */
 .Projects-container {
   display: flex;
   flex-wrap: wrap;
@@ -40,10 +68,38 @@ body {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
-  width: calc(50% - 20px); /* Two items per row with gap */
+  width: calc(50% - 20px); /* Two items per row */
+  transition: transform 0.2s;
 }
 
-/* Contact Form Styles */
+.Project-card:hover {
+  transform: scale(1.02);
+}
+
+/* Contact Section */
+.App-contact {
+  margin-top: 30px;
+}
+
+.App-contact h2 {
+  color: #00796b;
+}
+
+/* Footer Styles */
+.App-footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #00796b;
+  color: white;
+  border-top: 4px solid #004d40;
+}
+
+.App-footer p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Form Styles */
 form {
   display: flex;
   flex-direction: column;
@@ -55,25 +111,25 @@ label {
 }
 
 input, textarea {
-  padding: 8px;
+  padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 16px;
 }
 
-/* Button Styles */
 button {
-  background-color: #00796b; /* Darker teal background */
+  background-color: #00796b;
   color: white;
   border: none;
-  padding: 10px 20px; /* Vertical and horizontal padding */
+  padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  max-width: 200px; /* Set maximum width for the button */
-  align-self: flex-start; /* Align button to the start (left) */
+  max-width: 200px;
+  transition: background-color 0.2s;
 }
 
 button:hover {
-  background-color: #004d40; /* Darker shade for hover effect */
+  background-color: #004d40;
 }
 
 pre {
